@@ -16,8 +16,10 @@ UHC 2.0 uses a 13-month year. Each month has exactly 28 days, with **Leap Day** 
 - View the calculated weekday, year length, day-of-year number, and UTC equivalent.
 - Copy either the UHC or Gregorian timestamp.
 - Reverse the conversion direction while carrying the current result into the other form.
-- Responsive interface for desktop and mobile screens.
-- Standalone implementation: HTML, CSS, and JavaScript in one file, with no framework, build step, external library, backend, or network request.
+- Results update live as you type; **Enter** converts immediately and the tabs support arrow-key navigation.
+- Responsive, animated interface for desktop and mobile screens, with `prefers-reduced-motion` support.
+- A separate **About UHC** page (`info.html`) explaining the epoch, months, intercalary days, leap years, weekdays, notation, and FAQs.
+- Standalone static implementation: plain HTML, CSS, and JavaScript, with no framework, build step, external library, backend, or network request.
 
 ## UHC 2.0 calendar rules
 
@@ -106,7 +108,7 @@ The year is padded to at least five digits; month and day are two digits.
 Examples:
 
 ```text
-HE12026-12-04   # 4 November 2026 CE
+HE12026-12-04   # 4 November 12026 HE (8 November 2026 CE)
 HE12028-LD      # Leap Day in 12028 HE
 HE12026-WD      # World Day in 12026 HE
 ```
@@ -145,12 +147,12 @@ The weekday is calculated from the number of elapsed days since the epoch, modul
 ### Run locally
 
 1. Download or clone this repository.
-2. Open `index.html` in a modern browser.
+2. Open `index.html` in a modern browser. Keep `info.html` in the same folder so the **About UHC** links work.
 3. Choose a conversion direction:
    - **Gregorian → UHC** to enter a Gregorian date.
    - **UHC → Gregorian** to enter a UHC date.
 4. Enter the date, time, and timezone mode.
-5. Select **Convert date & time**. The result panel displays both calendar dates and related time information.
+5. The result panel updates automatically; select **Convert date & time** (or press **Enter**) to convert immediately. Use **Reverse ⇄** to carry the result into the opposite direction.
 
 No installation or build process is required. JavaScript must be enabled in the browser.
 
@@ -166,7 +168,7 @@ Then open <http://localhost:8000>.
 
 - **Device timezone** uses the browser's configured local timezone.
 - **UTC** treats the entered time as UTC.
-- **Manual UTC offset** accepts an offset such as `+05:30`, `-04:00`, or `Z`.
+- **Manual UTC offset** accepts an offset such as `+05:30`, `-04:00`, `+5:30`, `+0530`, `+05`, or `Z`, from −12:00 to +14:00.
 
 The selected wall-clock time and timezone are retained when converting between calendar systems. The UTC equivalent is calculated and displayed separately. For historical dates, the browser's timezone data may not represent historical local-time practices accurately; use UTC or a known manual offset when exact historical timezone interpretation is required.
 
@@ -183,22 +185,24 @@ These examples are also checked by the converter's built-in conformance checks.
 
 ## Project structure
 
-The app is intentionally kept as a single file:
+The site is intentionally two static files with no build step:
 
 ```text
 .
-├── index.html   # Complete application: markup, styles, and conversion logic
+├── index.html   # Converter: markup, styles, and conversion logic
+├── info.html    # About page explaining the UHC 2.0 proposal
+├── LICENSE      # GNU General Public License v3.0
 └── README.md    # Project documentation
 ```
 
-If the downloaded HTML file has another name, rename it to `index.html` for the simplest GitHub Pages setup.
+Each HTML file is self-contained (inline CSS and JavaScript). `index.html` and `info.html` link to each other by relative path, so keep them in the same folder.
 
 ## Deploy with GitHub Pages
 
 This is a static site and does not need a build command.
 
-1. Add the application file to the repository root as `index.html`.
-2. Add this `README.md` to the repository root.
+1. Add `index.html` and `info.html` to the repository root.
+2. Add this `README.md` (and the existing `LICENSE`) to the repository root.
 3. Push the files to the `main` branch.
 4. In the repository, open **Settings → Pages**.
 5. Under **Build and deployment**, choose **Deploy from a branch**.
@@ -214,6 +218,8 @@ See the official [GitHub Pages guide](https://docs.github.com/en/pages/getting-s
 - BCE input uses BCE year notation; internal calculations use astronomical year numbering.
 - Device-timezone conversion depends on the browser and its timezone database. For historical dates, local timezone offsets can be uncertain or unavailable; UTC or a manually supplied offset is preferable when precision matters.
 - The converter does not calculate astronomical events or dynamically adjust the leap-year rule. It applies the fixed Gregorian 400-year cycle specified by UHC 2.0.
+- Device-timezone offsets are rounded to the nearest minute (the result is labelled when this happens), and years beyond the browser's date range use a projected offset.
+- The Gregorian date picker accepts years up to 275,760 CE; larger HE years can still be entered in UHC → Gregorian mode, but cannot be reversed into the picker.
 - A date conversion does not change the underlying definition of a second, UTC, Unix time, or any physical time standard.
 
 ## Privacy
@@ -222,4 +228,4 @@ All conversion logic runs locally in the browser. The application contains no an
 
 ## License
 
-No license is currently included. Add a `LICENSE` file to the repository to specify the terms under which others may use, modify, and distribute the project.
+This project is licensed under the **GNU General Public License v3.0** (GPL-3.0). See the [`LICENSE`](LICENSE) file for the full terms.
